@@ -1,11 +1,23 @@
-package socket
+package socketio
 
 import (
 	"bytes"
+	"fmt"
 	"net"
 )
 
-func read(conn net.Conn) (string, error) {
+const (
+	DELIMITER = '\t'
+)
+
+var logSn = 1
+
+func PrintLog(format string, args ...interface{}) {
+	fmt.Printf("%d: %s", logSn, fmt.Sprintf(format, args...))
+	logSn++
+}
+
+func Read(conn net.Conn) (string, error) {
 	readBytes := make([]byte, 1)
 	var buffer bytes.Buffer
 	for {
@@ -22,7 +34,7 @@ func read(conn net.Conn) (string, error) {
 	return buffer.String(), nil
 }
 
-func write(conn net.Conn, content string) (int, error) {
+func Write(conn net.Conn, content string) (int, error) {
 	var buffer bytes.Buffer
 	buffer.WriteString(content)
 	buffer.WriteByte(DELIMITER)
